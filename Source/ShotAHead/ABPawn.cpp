@@ -21,10 +21,10 @@ AABPawn::AABPawn()
 	SpringArm->SetupAttachment(Capsule);
 	Camera->SetupAttachment(SpringArm);
 
-	Capsule->SetCapsuleHalfHeight(88.0f); // Ä³¸¯ÅÍÀÇ Àý¹Ý ³ôÀÌ ¾î¶»°Ô ±¸ÇÏÁö?
-	Capsule->SetCapsuleRadius(34.0f); // Ä³¸¯ÅÍÀÇ ¸öµÑ·¹
+	Capsule->SetCapsuleHalfHeight(88.0f); // í‚¤ ì ˆë§Œ ë§Œí¼
+	Capsule->SetCapsuleRadius(34.0f); // ë‘˜ë ˆ
 
-	// ¾ð¸®¾ó ¾×ÅÍ ±âÁØ À§Ä¡: Á¤Áß¾Ó, ¿¡µðÅÍ: ¹ß¹Ù´Ú À§, È¸ÀüÀ¸·Î ¾Ö¼Â ¾ÖµðÅÍ »ó(ºí·£´õ..)ÀÇ ÁÂÇ¥Ãà°ú ¾ð¸®¾óÀÇ ÁÂÇ¥ÃàÀ» ¸ÂÃß´Â ÀÛ¾÷ÀÓ
+	// ì• ì…‹, ì–¸ë¦¬ì–¼ ì¶• ë§žì¶”ë ¤ê³  íšŒì „í•˜ê³ , ì–¸ë¦¬ì–¼ì€ ìºë¦­í„° ì¤‘ì‹¬ìœ¼ë¡œ ì¢Œí‘œ?ë¥¼ ë§žì¶”ê¸° ë–„ë¬¸ì— ë‚´ë ¤ì¤€ê±°ìž„
 	Mesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f)); 
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, -0.0f));
@@ -32,6 +32,13 @@ AABPawn::AABPawn()
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WIZARD(TEXT("SkeletalMesh'/Game/BattleWizardPolyart/Meshes/WizardSM.WizardSM'"));
 	if (WIZARD.Succeeded()) {
 		Mesh->SetSkeletalMesh(WIZARD.Object);
+	}
+
+	Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	static ConstructorHelpers::FClassFinder<UAnimInstance> WIZARD_ANIM(TEXT("AnimBlueprint'/Game/BattleWizardPolyart/Animations/WizardAnimBlueprint.WizardAnimBlueprint_C'"));
+	if (WIZARD_ANIM.Succeeded()) {
+		Mesh->SetAnimInstanceClass(WIZARD_ANIM.Class);
 	}
 }
 
