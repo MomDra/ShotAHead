@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "ShotAHead.h"
 #include "ABCharacter.h"
+#include "Ball.h"
 
 // Sets default values
 AABCharacter::AABCharacter()
@@ -30,6 +31,12 @@ AABCharacter::AABCharacter()
 	}
 
 	SetControlMode();
+
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ABCharacter"));
+
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AABCharacter::OnHit);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AABCharacter::OnOverLap);
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +72,15 @@ void AABCharacter::Tick(float DeltaTime)
 		GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
 		AddMovementInput(DirectionToMove);
 	}
+
+	
+	static float abc;
+
+	abc += DeltaTime;
+	if (abc >= 3.0f) {
+		Fire();
+		abc = 0.0f;
+	}
 }
 
 // Called to bind functionality to input
@@ -84,4 +100,21 @@ void AABCharacter::UpDown(float NewAxisValue)
 void AABCharacter::LeftRight(float NewAxisValue)
 {
 	DirectionToMove.Y = NewAxisValue;
+}
+
+void AABCharacter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	static int i = 0;
+	i++;
+	ABLOG(Warning, TEXT("%d"), i);
+}
+
+void AABCharacter::OnOverLap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABLOG_S(Warning);
+}
+
+void AABCharacter::Fire()
+{
+	ABall* ball = GetWorld()->SpawnActor<ABall>(GetActorLocation() + GetActorForwardVector() * 50.0f, GetActorRotation());
 }
